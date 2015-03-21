@@ -13,10 +13,11 @@ public class GameController
 {
 	private GameFrame baseFrame;
 	private int [][] twoD;
+	private CharacterController character;
 	
 	public GameController()
-	{
-		baseFrame = new GameFrame(this);	
+	{	
+		baseFrame = new GameFrame(this);
 	}
 	
 
@@ -25,4 +26,8 @@ public class GameController
 		
 	}
 	
+	public CharacterController getCharacter()
+	{
+		return character;
+	}
 }

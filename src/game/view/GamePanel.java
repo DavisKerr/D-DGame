@@ -1,6 +1,8 @@
 package game.view;
 
+import game.controller.CharacterController;
 import game.controller.GameController;
+import game.controller.MovementListener;
 
 import java.awt.*;
 
@@ -18,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -47,13 +50,46 @@ public class GamePanel extends JPanel implements Runnable
 	private Graphics dbg;
 	private Image dbImage;
 	Graphics2D g2;
+	private CharacterController character;
+	private KeyListener listener;
 	
 	public GamePanel(GameController baseController)
 	{
 		this.baseController = baseController;
+		character = new CharacterController();
+		baseLayout = new SpringLayout();
+//		listener = new MovementListener();
+//		setFocusable(true);
+//		addKeyListener(listener);
+		addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e)
+			{
+				String key = KeyEvent.getKeyText(e.getKeyCode());
+				System.out.println("You pushed: " +  key);
+				if(key.equalsIgnoreCase("D"))
+				{
+					character.setPosition(character.getPosition()[0] + 5, y);
+				}
+				else if(key.equalsIgnoreCase("A"))
+				{
+					character.setPosition(character.getPosition()[0] - 5, y);
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				
+			}
+		});
+		setFocusable(true);
 		
-		baseLayout = new SpringLayout();	
-		x = 0;
+		x = character.getPosition()[0];
+		y = character.getPosition()[1];
 		//x = 200;
 		
 		gameRender();
@@ -113,11 +149,11 @@ public class GamePanel extends JPanel implements Runnable
 	{
 		for(int i = 0; i < 10000; i++)
 		{
+			
 			animate();
-			
-			x = (int) (Math.random() * 100);
-			
-			y = (int)  100;
+			//if(listener
+			x = character.getPosition()[0];
+			y = character.getPosition()[1];
 			animateScreen();
 			try
 			{
@@ -203,8 +239,8 @@ public class GamePanel extends JPanel implements Runnable
 			dbImage = createImage(PWIDTH, PHEIGHT);
 			g2.setColor(Color.GREEN);
 			g2.fillRect(0, 0, PWIDTH, PHEIGHT);
-			g2.drawImage(dbImage, 0, x, null);
-			g2.drawImage(im, 0, 0, null);
+			g2.drawImage(dbImage, 0, 0, null);
+			g2.drawImage(im, x, y, null);
 		}
 		catch(Exception e)
 		{
